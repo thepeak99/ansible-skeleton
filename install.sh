@@ -1,22 +1,22 @@
 #!/bin/bash
 
-install_ubuntu() {
-  sudo apt-get install software-properties-common
-  sudo apt-add-repository ppa:ansible/ansible
-  sudo apt-get update
-  sudo apt-get install ansible
+install() {
+    sudo easy_install pip
+    sudo pip install ansible
 }
 
-echo -e "\e[92mChecking if Ansible is installed and the last version..."
+printf "\e[92mChecking if Ansible is installed and the last version...\n"
 
-if [ -e /usr/bin/ansible ]; then
+if [[ -e /usr/bin/ansible ]] || [[ -e /usr/local/bin/ansible ]]; then
   ANSIBLE_VER=$(ansible --version)
 
-  if ! [[ "$ANSIBLE_VER" =~ "1.9.2" ]]; then
-     install_ubuntu
+  if ! [[ "$ANSIBLE_VER" =~ "1.9.3" ]]; then
+     install
   fi
+else
+  install
 fi
 
-echo -e "\e[92mInstalling roles..."
-echo -e "\e[0m"
+printf "\e[92mInstalling roles...\n"
+printf "\e[0m\n"
 ansible-galaxy install --force -p playbook/galaxy-roles -r requirements.txt
